@@ -21,7 +21,7 @@ export default function ChatScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<Language | 'auto'>('auto');
-  const [useStreaming, setUseStreaming] = useState(true);
+  const [useStreaming, setUseStreaming] = useState(false);
 
   // Handle text message send
   const handleSendText = async (text: string) => {
@@ -67,8 +67,8 @@ export default function ChatScreen() {
               // Speak the complete response
               Speech.speak(streamedText, {
                 language: detectedLang === 'en' ? 'en-US' :
-                          detectedLang === 'hi' ? 'hi-IN' :
-                          detectedLang === 'ta' ? 'ta-IN' : 'te-IN',
+                  detectedLang === 'hi' ? 'hi-IN' :
+                    detectedLang === 'ta' ? 'ta-IN' : 'te-IN',
               });
             }
           },
@@ -94,8 +94,8 @@ export default function ChatScreen() {
         const lang = response.language || selectedLanguage;
         Speech.speak(response.response, {
           language: lang === 'en' ? 'en-US' :
-                    lang === 'hi' ? 'hi-IN' :
-                    lang === 'ta' ? 'ta-IN' : 'te-IN',
+            lang === 'hi' ? 'hi-IN' :
+              lang === 'ta' ? 'ta-IN' : 'te-IN',
         });
       }
     } catch (error) {
@@ -186,19 +186,29 @@ export default function ChatScreen() {
       };
       setMessages((prev) => [...prev, aiMessage]);
 
-      // Play the audio response
-      const sound = new Audio.Sound();
-      const audioUrl = URL.createObjectURL(response.audioBlob);
-      await sound.loadAsync({ uri: audioUrl });
-      await sound.playAsync();
-      
-      // Clean up
-      sound.setOnPlaybackStatusUpdate((status) => {
-        if (status.isLoaded && status.didJustFinish) {
-          sound.unloadAsync();
-          URL.revokeObjectURL(audioUrl);
-        }
-      });
+      // Only try to play audio if we actually received audio data
+      if (response.audioBlob && response.audioBlob.size > 0) {
+        const sound = new Audio.Sound();
+        const audioUrl = URL.createObjectURL(response.audioBlob);
+        await sound.loadAsync({ uri: audioUrl });
+        await sound.playAsync();
+
+        // Clean up
+        sound.setOnPlaybackStatusUpdate((status) => {
+          if (status.isLoaded && status.didJustFinish) {
+            sound.unloadAsync();
+            URL.revokeObjectURL(audioUrl);
+          }
+        });
+      } else {
+        // Fallback: Use device TTS if backend didn't send audio
+        const lang = response.language || (selectedLanguage === 'auto' ? 'en' : selectedLanguage) || 'en';
+        Speech.speak(response.responseText, {
+          language: lang === 'en' ? 'en-US' :
+            lang === 'hi' ? 'hi-IN' :
+              lang === 'ta' ? 'ta-IN' : 'te-IN',
+        });
+      }
     } catch (error) {
       console.error('Error sending audio:', error);
       Alert.alert('Error', 'Failed to send audio. Check your connection and API URL.');

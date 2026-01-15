@@ -101,7 +101,7 @@ export const sendAudioMessage = async (
   stream: boolean = false
 ): Promise<AudioChatResponse> => {
   const formData = new FormData();
-  
+
   // For web, we need to fetch the blob first
   if (typeof window !== 'undefined' && audioUri.startsWith('blob:')) {
     const response = await fetch(audioUri);
@@ -116,7 +116,7 @@ export const sendAudioMessage = async (
       name: 'audio.wav',
     } as any);
   }
-  
+
   if (language) {
     formData.append('language', language);
   }
@@ -126,18 +126,17 @@ export const sendAudioMessage = async (
     headers: {
       'Content-Type': 'multipart/form-data',
     },
-    responseType: 'blob', // Expect binary audio response
+    // Changed: Expect JSON response not blob, as we removed audio generation
+    responseType: 'json',
   });
-  
-  // Extract metadata from headers
-  const transcription = response.headers['x-transcription'] || '';
-  const responseText = response.headers['x-response-text'] || '';
-  const responseLang = response.headers['x-language'] || language;
-  
+
+  // Backend now returns JSON with text response and transcription
+  const data = response.data;
+
   return {
-    audioBlob: response.data,
-    transcription,
-    responseText,
-    language: responseLang,
+    audioBlob: new Blob(), // Empty blob as no audio is generated
+    transcription: data.transcription || '',
+    responseText: data.response || '',
+    language: data.language || language || 'en',
   };
 };
