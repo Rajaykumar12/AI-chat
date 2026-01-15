@@ -19,9 +19,13 @@ chroma/
 *.db
 *.sqlite
 
+backend/documents/*
+!backend/documents/readme.md
+
+
 # Documents (optional - uncomment if you don't want to commit docs)
-# backend/documents/*.pdf
-# backend/documents/*.pptx
+backend/documents/*.pdf
+backend/documents/*.pptx
 
 # Node
 node_modules/
