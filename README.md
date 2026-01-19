@@ -87,6 +87,27 @@ npm start
 
 ---
 
+### Docker Setup (Recommended)
+
+Run the entire stack (Frontend + Backend) with a single command:
+
+```bash
+# Start all services
+docker compose up --build
+
+# Backend API: http://localhost:8000
+# Frontend App: http://localhost:8081
+```
+
+**Note for RAG:**
+Place your PDF/PPTX documents in `backend/documents/`. They are automatically synced to the container. Restart the backend to index new files:
+
+```bash
+docker compose restart backend
+```
+
+---
+
 ## Project Structure
 
 ```

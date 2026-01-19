@@ -1,14 +1,23 @@
-fastapi==0.115.0
-uvicorn[standard]==0.32.0
-python-multipart==0.0.12
-pypdf==5.1.0
-python-pptx==1.0.2
-python-dotenv==1.0.1
-langchain==0.3.13
-langchain-community==0.3.13
-faiss-cpu==1.9.0
-tiktoken==0.8.0
-openai-whisper==20231117
-sentence-transformers==2.2.2
-langdetect==1.0.9
-langchain-groq==0.2.1
+# 1. Point to the CPU-only PyTorch repository
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# 2. Install PyTorch CPU components explicitly first
+torch
+torchvision
+torchaudio
+
+# 3. Your libraries (dependencies will now use the CPU torch installed above)
+fastapi
+uvicorn[standard]
+python-multipart
+pypdf
+python-pptx
+python-dotenv
+langchain
+langchain-community
+faiss-cpu
+tiktoken
+openai-whisper
+sentence-transformers
+langdetect
+langchain-groq
