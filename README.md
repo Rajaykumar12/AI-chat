@@ -145,15 +145,6 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 ---
 
-## Acknowledgements
-
-- [Groq](https://groq.com)
-- [HuggingFace](https://huggingface.co)
-- [OpenAI Whisper](https://github.com/openai/whisper)
-- [langdetect](https://pypi.org/project/langdetect/)
-
----
-
 ## Contributing
 
 Pull requests and issues are welcome! For major changes, please open an issue first to discuss what you would like to change.
